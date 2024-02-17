@@ -89,8 +89,8 @@ public class TaskManager {
                     allSubtasksNew = false;
                 }
             }
-            if (allSubtasksDone) epic.setStatus(TaskStatus.DONE);
-            else if (allSubtasksNew && (epic.getSubtasks().isEmpty())) epic.setStatus(TaskStatus.NEW);
+            if (allSubtasksNew) epic.setStatus(TaskStatus.NEW);
+            else if (allSubtasksDone) epic.setStatus(TaskStatus.DONE);
             else epic.setStatus(TaskStatus.IN_PROGRESS);
     }
 
