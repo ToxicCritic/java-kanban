@@ -27,38 +27,44 @@ public class Main {
         taskManager.createSubtask(subtask1);
         taskManager.createSubtask(subtask2);
 
-        epic1.updateStatus();
+        taskManager.updateEpicStatus(epic1);
 
         // Выводим информацию о подзадачах эпика
         System.out.println("\nПодзадачи эпика " + epic1.getTitle() + ": (" + epic1.getStatus() + ")");
-        for (Subtask subtask : epic1.getSubtasks()) {
-            System.out.println(subtask.getTitle() + " (" + subtask.getStatus() + ")");
+        for (int id : epic1.getSubtasks()) {
+            System.out.println(taskManager.getSubtaskById(id));
         }
 
         // Обновляем статус подзадачи
         subtask2.setStatus(TaskStatus.DONE);
-        epic1.updateStatus();
+        taskManager.updateEpicStatus(epic1);
         System.out.println("\nСтатус эпика " + epic1.getTitle() + ": " + epic1.getStatus());
 
         subtask1.setStatus(TaskStatus.DONE);
-        epic1.updateStatus();
+        taskManager.updateEpicStatus(epic1);
         System.out.println("\nСтатус эпика " + epic1.getTitle() + ": " + epic1.getStatus());
 
 
         // Удаляем задачу по идентификатору
         taskManager.deleteSubtaskById(subtask1.getId());
+        System.out.println("Подзадача " + subtask1.getTitle() + " удалена из эпика " +
+                taskManager.getEpicById(subtask1.getEpicId()).getTitle() + "!");
 
         // Выводим список всех задач
         showAllTasks(taskManager);
 
         taskManager.deleteEpicById(epic1.getId());
+        System.out.println("Эпик " + epic1.getTitle() + " был удален!");
 
         showAllTasks(taskManager);
     }
 
     public static void showAllTasks(TaskManager taskManager) {
         System.out.println("\nСписок всех задач:");
-        ArrayList<Task> allTasks = taskManager.getAllTasks();
+        ArrayList<Task> allTasks = new ArrayList<>();
+        for (Task task : taskManager.getAllTasks()) allTasks.add(task);
+        for (Epic epic : taskManager.getAllEpics()) allTasks.add(epic);
+        for (Subtask subtask : taskManager.getAllSubtasks()) allTasks.add(subtask);
         for (Task task : allTasks) {
             System.out.println(task.getTitle() + " - " + task.getStatus() + " (" + task.getClass() + ") ");
         }

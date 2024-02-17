@@ -1,31 +1,32 @@
 package tasks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Epic extends Task {
-    private ArrayList<Subtask> subtasks;
+    private ArrayList<Integer> subtasks;
 
     public Epic(String title, String description, TaskStatus status) {
         super(title, description, status);
         this.subtasks = new ArrayList<>();
     }
 
-    public void addSubtask(Subtask subtask) {
-        subtasks.add(subtask);
+    public void addSubtask(int subtaskId) {
+        subtasks.add(subtaskId);
     }
 
-    public ArrayList<Subtask> getSubtasks() {
+    public ArrayList<Integer> getSubtasks() {
         return subtasks;
     }
 
-    public void removeSubtask(Subtask subtask) {
-        subtasks.remove(subtask);
+    public void removeSubtask(Integer subtaskId) {
+        subtasks.remove(subtaskId);
     }
 
-    public void updateStatus() {
+    public void updateStatus(HashMap<Integer, Subtask> subtaskMap) {
         boolean allSubtasksDone = true;
-        for (Subtask subtask : subtasks) {
-            if (subtask.getStatus() != TaskStatus.DONE) {
+        for (int id : subtasks) {
+            if (subtaskMap.get(id).getStatus() != TaskStatus.DONE) {
                 allSubtasksDone = false;
                 break;
             }
