@@ -27,7 +27,6 @@ public class Main {
         taskManager.createSubtask(subtask1);
         taskManager.createSubtask(subtask2);
 
-        taskManager.updateEpicStatus(epic1);
 
         // Выводим информацию о подзадачах эпика
         System.out.println("\nПодзадачи эпика " + epic1.getTitle() + ": (" + epic1.getStatus() + ")");
@@ -37,11 +36,11 @@ public class Main {
 
         // Обновляем статус подзадачи
         subtask2.setStatus(TaskStatus.DONE);
-        taskManager.updateEpicStatus(epic1);
+        taskManager.updateSubtask(subtask2);
         System.out.println("\nСтатус эпика " + epic1.getTitle() + ": " + epic1.getStatus());
 
         subtask1.setStatus(TaskStatus.DONE);
-        taskManager.updateEpicStatus(epic1);
+        taskManager.updateSubtask(subtask1);
         System.out.println("\nСтатус эпика " + epic1.getTitle() + ": " + epic1.getStatus());
 
 
