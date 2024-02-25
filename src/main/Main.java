@@ -1,5 +1,7 @@
 package main;
 
+import manager.InMemoryTaskManager;
+import manager.Managers;
 import manager.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
 
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = (InMemoryTaskManager) Managers.getDefault();
 
 
         // Создаем обычную задачу
@@ -20,19 +22,14 @@ public class Main {
         // Создаем эпик
         Epic epic1 = new Epic("Разработка приложения", "Разработка нового приложения", TaskStatus.NEW);
         taskManager.createEpic(epic1);
-
+        taskManager.removeAllEpics();
         // Создаем подзадачи для эпика
         Subtask subtask1 = new Subtask("Планирование", "Подготовка плана разработки", TaskStatus.NEW, epic1.getId());
         Subtask subtask2 = new Subtask("Программирование", "Написание кода", TaskStatus.IN_PROGRESS, epic1.getId());
         taskManager.createSubtask(subtask1);
         taskManager.createSubtask(subtask2);
 
-
-        // Выводим информацию о подзадачах эпика
-        System.out.println("\nПодзадачи эпика " + epic1.getTitle() + ": (" + epic1.getStatus() + ")");
-        for (int id : epic1.getSubtasks()) {
-            System.out.println(taskManager.getSubtaskById(id));
-        }
+        showAllTasks(taskManager);
 
         // Обновляем статус подзадачи
         subtask2.setStatus(TaskStatus.DONE);
@@ -58,14 +55,27 @@ public class Main {
         showAllTasks(taskManager);
     }
 
-    public static void showAllTasks(TaskManager taskManager) {
-        System.out.println("\nСписок всех задач:");
-        ArrayList<Task> allTasks = new ArrayList<>();
-        for (Task task : taskManager.getAllTasks()) allTasks.add(task);
-        for (Epic epic : taskManager.getAllEpics()) allTasks.add(epic);
-        for (Subtask subtask : taskManager.getAllSubtasks()) allTasks.add(subtask);
-        for (Task task : allTasks) {
-            System.out.println(task.getTitle() + " - " + task.getStatus() + " (" + task.getClass() + ") ");
+    private static void showAllTasks(InMemoryTaskManager manager) {
+        System.out.println("Задачи:");
+        for (Task task : manager.getAllTasks()) {
+            System.out.println(task.getTitle());
+        }
+        System.out.println("Эпики:");
+        for (Task epic : manager.getAllEpics()) {
+            System.out.println(epic.getTitle());
+
+            for (Task task : manager.getEpicSubtasks(epic.getId())) {
+                System.out.println("--> " + task);
+            }
+        }
+        System.out.println("Подзадачи:");
+        for (Task subtask : manager.getAllSubtasks()) {
+            System.out.println(subtask.getTitle());
+        }
+
+        System.out.println("История:");
+        for (Task task : manager.getHistoryManager().getHistory()) {
+            System.out.println(task.getTitle() + " (" + task.getId() + ")");
         }
     }
 }

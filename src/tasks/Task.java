@@ -35,4 +35,8 @@ public class Task {
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }
