@@ -22,7 +22,6 @@ public class Main {
         // Создаем эпик
         Epic epic1 = new Epic("Разработка приложения", "Разработка нового приложения", TaskStatus.NEW);
         taskManager.createEpic(epic1);
-        taskManager.removeAllEpics();
         // Создаем подзадачи для эпика
         Subtask subtask1 = new Subtask("Планирование", "Подготовка плана разработки", TaskStatus.NEW, epic1.getId());
         Subtask subtask2 = new Subtask("Программирование", "Написание кода", TaskStatus.IN_PROGRESS, epic1.getId());

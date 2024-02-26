@@ -4,9 +4,11 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.util.ArrayList;
+import java.util.Collection;
 
 public interface TaskManager {
+    Collection<Task> getHistory(); // Не очень понял зачем, ведь метод в HistoryManager статический
+
     void createTask(Task task);
 
     Task getTaskById(int id);
@@ -21,9 +23,7 @@ public interface TaskManager {
 
     void deleteEpicById(int id);
 
-    ArrayList<Subtask> getEpicSubtasks(int id);
-
-    void updateEpicStatus(Epic epic);
+    Collection<Subtask> getEpicSubtasks(int id);
 
     void updateTask(Task updatedTask);
 
@@ -31,11 +31,11 @@ public interface TaskManager {
 
     void updateEpic(Epic updatedEpic);
 
-    ArrayList<Task> getAllTasks();
+    Collection<Task> getAllTasks();
 
-    ArrayList<Subtask> getAllSubtasks();
+    Collection<Subtask> getAllSubtasks();
 
-    ArrayList<Epic> getAllEpics();
+    Collection<Epic> getAllEpics();
 
     void createSubtask(Subtask subtask);
 

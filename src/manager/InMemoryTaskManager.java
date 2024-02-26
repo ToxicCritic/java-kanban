@@ -7,15 +7,19 @@ import tasks.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Subtask> subtasks;
     private HashMap<Integer, Epic> epics;
-    private HistoryManager historyManager;
+    private InMemoryHistoryManager historyManager;
     private int idCounter;
 
-
+    @Override
+    public LinkedList<Task> getHistory() {
+        return historyManager.getHistory();
+    }
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
@@ -94,11 +98,10 @@ public class InMemoryTaskManager implements TaskManager {
         return subtasksOfEpic;
     }
 
-    @Override
     public void updateEpicStatus(Epic epic) {
             boolean allSubtasksNew = true;
             boolean allSubtasksDone = true;
-            if (epic.getSubtasks() != null) {
+            if (epic != null) {
                 for (int id : epic.getSubtasks()) {
                     if (subtasks.get(id) != null && subtasks.get(id).getStatus() != TaskStatus.DONE) {
                         allSubtasksDone = false;
