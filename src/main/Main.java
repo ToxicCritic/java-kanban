@@ -2,13 +2,11 @@ package main;
 
 import manager.InMemoryTaskManager;
 import manager.Managers;
-import manager.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskStatus;
 
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -37,12 +35,12 @@ public class Main {
 
         subtask1.setStatus(TaskStatus.DONE);
         taskManager.updateSubtask(subtask1);
-        System.out.println("\nСтатус эпика " + epic1.getTitle() + ": " + epic1.getStatus());
+        System.out.println("Статус эпика " + epic1.getTitle() + ": " + epic1.getStatus());
 
 
         // Удаляем задачу по идентификатору
         taskManager.deleteSubtaskById(subtask1.getId());
-        System.out.println("Подзадача " + subtask1.getTitle() + " удалена из эпика " +
+        System.out.println("\nПодзадача " + subtask1.getTitle() + " удалена из эпика " +
                 taskManager.getEpicById(subtask1.getEpicId()).getTitle() + "!");
 
         // Выводим список всех задач
@@ -55,7 +53,7 @@ public class Main {
     }
 
     private static void showAllTasks(InMemoryTaskManager manager) {
-        System.out.println("Задачи:");
+        System.out.println("\nЗадачи:");
         for (Task task : manager.getAllTasks()) {
             System.out.println(task.getTitle());
         }

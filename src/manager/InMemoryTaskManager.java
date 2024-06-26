@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class InMemoryTaskManager implements TaskManager {
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Subtask> subtasks;
-    private HashMap<Integer, Epic> epics;
-    private InMemoryHistoryManager historyManager;
+    private final HashMap<Integer, Task> tasks;
+    private final HashMap<Integer, Subtask> subtasks;
+    private final HashMap<Integer, Epic> epics;
+    private final InMemoryHistoryManager historyManager;
     private int idCounter;
 
     @Override
@@ -58,7 +58,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTaskById(int id) {
-        Task task = tasks.remove(id);
+        tasks.remove(id);
     }
 
     @Override
@@ -111,7 +111,10 @@ public class InMemoryTaskManager implements TaskManager {
                     }
                 }
             }
-            if (allSubtasksNew) epic.setStatus(TaskStatus.NEW);
+            if (allSubtasksNew) {
+                assert epic != null;
+                epic.setStatus(TaskStatus.NEW);
+            }
             else if (allSubtasksDone) epic.setStatus(TaskStatus.DONE);
             else epic.setStatus(TaskStatus.IN_PROGRESS);
     }
@@ -134,17 +137,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getAllTasks() {
-        return new ArrayList(tasks.values());
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
     public ArrayList<Subtask> getAllSubtasks() {
-        return new ArrayList(subtasks.values());
+        return new ArrayList<>(subtasks.values());
     }
 
     @Override
     public ArrayList<Epic> getAllEpics() {
-        return new ArrayList(epics.values());
+        return new ArrayList<>(epics.values());
     }
 
     public HistoryManager getHistoryManager() {
@@ -175,10 +178,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllSubtasks() {
-        ArrayList<Subtask> subtasksToDelete = new ArrayList<>();
-        for (Subtask subtask : subtasks.values()) {
-            subtasksToDelete.add(subtask);
-        }
+        ArrayList<Subtask> subtasksToDelete = new ArrayList<>(subtasks.values());
         for (Subtask subtask : subtasksToDelete) {
             int epicId = subtask.getEpicId();
             subtasks.remove(subtask.getId());
