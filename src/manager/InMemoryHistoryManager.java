@@ -5,7 +5,7 @@ import tasks.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private Map<Integer, Node<Task>> taskMap;
+    private final Map<Integer, Node<Task>> taskMap;
     private Node<Task> tail;
     private Node<Task> head;
 
@@ -69,7 +69,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             removeNode(taskMap.get(id));
             taskMap.remove(id);
         }
-
     }
 }
 
