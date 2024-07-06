@@ -27,6 +27,7 @@ public class Main {
         taskManager.createSubtask(subtask2);
 
         showAllTasks(taskManager);
+        showHistory(taskManager);
 
         // Обновляем статус подзадачи
         subtask2.setStatus(TaskStatus.DONE);
@@ -36,7 +37,6 @@ public class Main {
         subtask1.setStatus(TaskStatus.DONE);
         taskManager.updateSubtask(subtask1);
         System.out.println("Статус эпика " + epic1.getTitle() + ": " + epic1.getStatus());
-
 
         // Удаляем задачу по идентификатору
         taskManager.deleteSubtaskById(subtask1.getId());
@@ -69,7 +69,9 @@ public class Main {
         for (Task subtask : manager.getAllSubtasks()) {
             System.out.println(subtask.getTitle());
         }
+    }
 
+    private static void showHistory(InMemoryTaskManager manager) {
         System.out.println("История:");
         for (Task task : manager.getHistoryManager().getHistory()) {
             System.out.println(task.getTitle() + " (" + task.getId() + ")");
