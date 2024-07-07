@@ -17,7 +17,7 @@ public class Main {
 
         System.out.println("Добро пожаловать в TaskManager!");
         int input = 0;
-        while (input != 6) {
+        while (input != 9) {
             showMenu();
 
             input = s.nextInt();
@@ -35,10 +35,13 @@ public class Main {
                     createSubtask(taskManager);
                     break;
                 case 5:
-                    showHistory(taskManager);
+                    updateStatus(taskManager);
                     break;
                 case 6:
-                    return;
+                    showHistory(taskManager);
+                    break;
+                case 9:
+                    break;
             }
         }
     }
@@ -53,6 +56,7 @@ public class Main {
         for (Task epic : manager.getAllEpics()) {
             System.out.println("ID " + epic.getId() + ". " + epic.getTitle() + ": " + epic.getDescription()
                     + " [" + epic.getStatus() + "]");
+            System.out.println("  Подзадачи:");
             for (Task task : manager.getEpicSubtasks(epic.getId())) {
                 System.out.println("--> " + "ID " + task.getId() + ". " + task.getTitle() + ": " + task.getDescription()
                         + " [" + task.getStatus() + "]");
@@ -75,8 +79,8 @@ public class Main {
         System.out.println("3. Добавить эпик");
         System.out.println("4. Добавить подзадачу");
         System.out.println("5. Обновить статус задачи");
-        System.out.println("5. Просмотреть историю");
-        System.out.println("6. Выход");
+        System.out.println("6. Просмотреть историю");
+        System.out.println("9. Выход");
     }
 
     private static void createTask(InMemoryTaskManager taskManager) {
@@ -129,8 +133,8 @@ public class Main {
         for (Epic epic : taskManager.getAllEpics()) {
             System.out.println(epic.getId() + ". " + epic.getTitle());
         }
-        int id = Integer.parseInt(s.nextLine());
 
+        int id = Integer.parseInt(s.nextLine());
         boolean isValid = false;
         for (Epic epic : taskManager.getAllEpics()) {
             if (epic.getId() == id) {
@@ -138,7 +142,10 @@ public class Main {
                 break;
             }
         }
-        if (!isValid) return;
+        if (!isValid) {
+            System.out.println("Неверный ID эпика.");
+            return;
+        }
 
         System.out.println("Введите название подзадачи:");
         String title = s.nextLine();
@@ -155,5 +162,72 @@ public class Main {
         taskManager.createSubtask(subtask);
         System.out.println("Подзадача \"" + title + "\" была успешно добавлена в эпик \"" +
                 taskManager.getEpicById(id).getTitle() + "\"");
+    }
+
+    private static void updateStatus(InMemoryTaskManager taskManager) {
+        Scanner s = new Scanner(System.in);
+
+        System.out.println("Выберите задачу для изменения статуса:");
+        showAllTasks(taskManager);
+
+        int id = s.nextInt();
+        int type = -1;
+        for (Epic epic : taskManager.getAllEpics()) {
+            if (epic.getId() == id) {
+                type = 1;
+                break;
+            }
+        }
+        if (type < 0) {
+            for (Task task : taskManager.getAllTasks()) {
+                if (task.getId() == id) {
+                    type = 2;
+                    break;
+                }
+            }
+        }
+        if (type < 0) {
+            for (Subtask subtask : taskManager.getAllSubtasks()) {
+                if (subtask.getId() == id) {
+                    type = 3;
+                    break;
+                }
+            }
+        }
+        if (type < 0) {
+            System.out.println("Неверный ID задачи!");
+            return;
+        }
+
+        System.out.println("Выберите новый статус для задачи:");
+        TaskStatus[] taskStatuses = TaskStatus.values();
+        for (int i = 1; i <= taskStatuses.length; i++) {
+            System.out.println(i + ". " + taskStatuses[i - 1]);
+        }
+
+        int statusId = s.nextInt();
+        if (statusId > 3 || statusId < 1) {
+            System.out.println("Неверный ID статуса задачи!");
+            return;
+        }
+
+        switch (type) {
+            case 1:
+                Epic epic = taskManager.getEpicById(id);
+                epic.setStatus(taskStatuses[statusId - 1]);
+                System.out.println("Статус для эпика " + epic.getTitle() + " был изменен на " + epic.getStatus());
+                break;
+            case 2:
+                Task task = taskManager.getTaskById(id);
+                task.setStatus(taskStatuses[statusId - 1]);
+                System.out.println("Статус для задачи " + task.getTitle() + " был изменен на " + task.getStatus());
+                break;
+            case 3:
+                Subtask subtask = taskManager.getSubtaskById(id);
+                subtask.setStatus(taskStatuses[statusId - 1]);
+                System.out.println("Статус для подзадачи " + subtask.getTitle() + " был изменен на " + subtask.getStatus());
+                taskManager.updateEpicStatus(taskManager.getEpicById(subtask.getEpicId()));
+                break;
+        }
     }
 }
