@@ -1,4 +1,4 @@
-package manager;
+package managers.historyManager;
 
 import tasks.Task;
 
@@ -16,35 +16,42 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     // Метод добавления задачи в конец списка
-    public void linkLast(Task element) {
+    private void linkLast(Task element) {
         Node<Task> last = tail;
         Node<Task> newNode = new Node<>(tail, element, null);
         tail = newNode;
-        if (last == null)
+        if (last == null) {
             head = newNode;
-        else
-            last.next = newNode;
+        }
+        else {
+            last.setNext(newNode);
+        }
         taskMap.put(element.getId(), newNode);
     }
 
     // Метод удаления узла из списка
-    public void removeNode(Node<Task> node) {
-        if (node.prev != null)
-            node.prev.next = node.next;
-        else
-            head = node.next;
-        if (node.next != null)
-            node.next.prev = node.prev;
-        else
-            tail = node.prev;
+    private void removeNode(Node<Task> node) {
+        if (node.getPrev() != null) {
+            node.getPrev().setNext(node.getNext());
+        }
+        else {
+            head = node.getNext();
+        }
+        if (node.getNext() != null) {
+            node.getNext().setPrev(node.getPrev());
+
+        }
+        else {
+            tail = node.getPrev();
+        }
     }
 
-    public List<Task> getTasks() {
+    private List<Task> getTasks() {
         List<Task> history = new ArrayList<>();
         Node<Task> current = head;
         while (current != null) {
-            history.add(current.data);
-            current = current.next;
+            history.add(current.getData());
+            current = current.getNext();
         }
         return history;
     }
@@ -56,6 +63,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
+        if (task == null) {
+            return;
+        }
         if (taskMap.containsKey(task.getId())) {
             removeNode(taskMap.get(task.getId()));
             taskMap.remove(task.getId());
