@@ -2,6 +2,7 @@ package main;
 
 import managers.taskManager.InMemoryTaskManager;
 import managers.Managers;
+import managers.taskManager.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -9,7 +10,7 @@ import tasks.TaskStatus;
 
 public class Main {
     public static void main(String[] args) {
-        InMemoryTaskManager taskManager = (InMemoryTaskManager) Managers.getDefault();
+        TaskManager taskManager = Managers.getDefault();
         // Создаем обычную задачу
         Task task1 = new Task ("Поход в магазин", "Поход в магазин за продуктами", TaskStatus.NEW);
         taskManager.createTask(task1);
@@ -52,7 +53,7 @@ public class Main {
         showAllTasks(taskManager);
     }
 
-    private static void showAllTasks(InMemoryTaskManager manager) {
+    private static void showAllTasks(TaskManager manager) {
         System.out.println("\nЗадачи:");
         for (Task task : manager.getAllTasks()) {
             System.out.println("ID " + task.getId() + ". " + task.getTitle() + ": " + task.getDescription()
@@ -70,9 +71,9 @@ public class Main {
         }
     }
 
-    private static void showHistory(InMemoryTaskManager manager) {
+    private static void showHistory(TaskManager manager) {
         System.out.println("История:");
-        for (Task task : manager.getHistoryManager().getHistory()) {
+        for (Task task : manager.getHistory()) {
             System.out.println(task.getTitle() + " (ID " + task.getId() + ")");
         }
     }
