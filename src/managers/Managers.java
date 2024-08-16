@@ -1,8 +1,11 @@
-package manager;
+package managers;
+
+import managers.historyManager.InMemoryHistoryManager;
+import managers.taskManager.InMemoryTaskManager;
+import managers.taskManager.TaskManager;
 
 public class Managers {
     public static TaskManager getDefault() {
-        // Здесь может быть логика выбора конкретной реализации TaskManager по умолчанию
         return new InMemoryTaskManager();
     }
 
