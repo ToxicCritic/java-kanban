@@ -11,6 +11,11 @@ public class Epic extends Task {
         this.subtasks = new ArrayList<>();
     }
 
+    @Override
+    public String toString() {
+        return String.format("ID: %d | Тип: Эпик | Название: %s | Статус: %s | Описание: %s | ID подзадач: %s",
+                getId(), getTitle(), getStatus(), getDescription(), subtasks.toString());
+    }
     public void addSubtask(int subtaskId) {
         subtasks.add(subtaskId);
     }

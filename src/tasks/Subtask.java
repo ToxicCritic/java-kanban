@@ -5,10 +5,8 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "[id=" + getId() +
-                ", title=" + getTitle() +
-                ", description=" + getDescription().length() +
-                ", status=" + getStatus() + "]";
+        return String.format("ID: %d | Тип: Подзадача | Название: %s | Статус: %s | Описание: %s | ID Эпика: %d",
+                getId(), getTitle(), getStatus(), getDescription(), epicId);
     }
     public Subtask(String title, String description, TaskStatus status, int epicId) {
         super(title, description, status);

@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 public class Managers {
     public static TaskManager getDefault() {
-        return new FileBackedTaskManager( new File(System.getProperty("user.dir"), "savefile.txt"));
+        return new FileBackedTaskManager( new File(System.getProperty("user.dir"), "tasks.csv"));
     }
 
     public static InMemoryHistoryManager getDefaultHistory() {

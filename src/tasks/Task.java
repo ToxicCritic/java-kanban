@@ -12,6 +12,12 @@ public class Task {
         this.status = status;
     }
 
+    @Override
+    public String toString() {
+        return String.format("ID: %d | Тип: Задача | Название: %s | Статус: %s | Описание: %s",
+                id, title, status, description);
+    }
+
     public int getId() {
         return id;
     }
