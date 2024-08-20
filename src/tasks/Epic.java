@@ -1,5 +1,7 @@
 package tasks;
 
+import managers.taskManager.FileBackedTaskManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,10 +14,10 @@ public class Epic extends Task {
     }
 
     @Override
-    public String toString() {
-        return String.format("ID: %d | Тип: Эпик | Название: %s | Статус: %s | Описание: %s | ID подзадач: %s",
-                getId(), getTitle(), getStatus(), getDescription(), subtasks.toString());
+    public void addToManager(FileBackedTaskManager manager) {
+        manager.createEpic(this);
     }
+
     public void addSubtask(int subtaskId) {
         subtasks.add(subtaskId);
     }

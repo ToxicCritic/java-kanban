@@ -8,9 +8,12 @@ import managers.taskManager.TaskManager;
 import java.io.File;
 import java.nio.file.Paths;
 
+
 public class Managers {
+    public static final String FILENAME = "tasks.csv";
+
     public static TaskManager getDefault() {
-        return new FileBackedTaskManager( new File(System.getProperty("user.dir"), "tasks.csv"));
+        return FileBackedTaskManager.loadFromFile(new File(System.getProperty("user.dir"), FILENAME));
     }
 
     public static InMemoryHistoryManager getDefaultHistory() {
