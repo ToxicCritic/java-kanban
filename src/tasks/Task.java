@@ -23,6 +23,10 @@ public class Task {
         manager.createTask(this);
     }
 
+    public String toCsvString() {
+        return String.format("%d,TASK,%s,%s,%s,\n", id, title, status, description);
+    }
+
     public int getId() {
         return id;
     }

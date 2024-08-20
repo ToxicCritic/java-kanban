@@ -14,6 +14,11 @@ public class Subtask extends Task {
         manager.createSubtask(this);
     }
 
+    @Override
+    public String toCsvString() {
+        return String.format("%d,SUBTASK,%s,%s,%s,%d\n", getId(), getTitle(), getStatus(), getDescription(), epicId);
+    }
+
     public int getEpicId() {
         return epicId;
     }

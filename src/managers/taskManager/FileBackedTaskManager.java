@@ -7,9 +7,6 @@ import tasks.Task;
 import tasks.TaskStatus;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -41,10 +38,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(taskToString(subtask) + "\n");
             }
 
-            // Сохранение истории
-            writer.write("\n");
-            writer.write(historyToString());
-
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении данных в файл.");
         }
@@ -55,21 +48,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.isEmpty()) {
-                    // История начинается после пустой строки
-                    String historyLine = reader.readLine();
-                    if (historyLine != null) {
-                        List<Integer> historyIds = historyFromString(historyLine);
-                        for (int id : historyIds) {
-                            Task task = manager.getTaskById(id);
-                            if (task != null) {
-                                manager.getHistoryManager().add(task);
-                            }
-                        }
-                    }
-                } else if (!line.startsWith("id")) {
+                if (!line.startsWith("id") && !line.isEmpty()) {
                     Task task = taskFromString(line);
-                    task.addToManager(manager); // Полиморфный вызов метода
+                    task.addToManager(manager);
                 }
             }
         } catch (IOException e) {
@@ -80,19 +61,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
 
 
-    private String taskToString(Task task) {
-        String epicId = "";
-        if (task instanceof Subtask) {
-            epicId = String.valueOf(((Subtask) task).getEpicId());
-        }
-        return String.format("%d,%s,%s,%s,%s,%s\n",
-                task.getId(),
-                task.getClass().getSimpleName().toUpperCase(),
-                task.getTitle(),
-                task.getStatus(),
-                task.getDescription(),
-                epicId
-        );
+    private static String taskToString(Task task) {
+        return task.toCsvString();
     }
 
     private static Task taskFromString(String value) {
@@ -122,19 +92,75 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-
-    private String historyToString() {
-        return getHistory().stream()
-                .map(task -> String.valueOf(task.getId()))
-                .collect(Collectors.joining(","));
+    @Override
+    public void createTask(Task task) {
+        super.createTask(task);
+        save();
     }
 
-    private static List<Integer> historyFromString(String value) {
-        String[] fields = value.split(",");
-        List<Integer> history = new ArrayList<>();
-        for (String field : fields) {
-            history.add(Integer.parseInt(field));
-        }
-        return history;
+    @Override
+    public void createSubtask(Subtask subtask) {
+        super.createSubtask(subtask);
+        save();
+    }
+
+    @Override
+    public void createEpic(Epic epic) {
+        super.createEpic(epic);
+        save();
+    }
+
+    @Override
+    public void updateTask(Task task) {
+        super.updateTask(task);
+        save();
+    }
+
+    @Override
+    public void updateSubtask(Subtask subtask) {
+        super.updateSubtask(subtask);
+        save();
+    }
+
+    @Override
+    public void updateEpic(Epic epic) {
+        super.updateEpic(epic);
+        save();
+    }
+
+    @Override
+    public void deleteTaskById(int id) {
+        super.deleteTaskById(id);
+        save();
+    }
+
+    @Override
+    public void deleteSubtaskById(int id) {
+        super.deleteSubtaskById(id);
+        save();
+    }
+
+    @Override
+    public void deleteEpicById(int id) {
+        super.deleteEpicById(id);
+        save();
+    }
+
+    @Override
+    public void removeAllTasks() {
+        super.removeAllTasks();
+        save();
+    }
+
+    @Override
+    public void removeAllSubtasks() {
+        super.removeAllSubtasks();
+        save();
+    }
+
+    @Override
+    public void removeAllEpics() {
+        super.removeAllEpics();
+        save();
     }
 }

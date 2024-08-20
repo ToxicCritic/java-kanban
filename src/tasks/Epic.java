@@ -18,6 +18,11 @@ public class Epic extends Task {
         manager.createEpic(this);
     }
 
+    @Override
+    public String toCsvString() {
+        return String.format("%d,EPIC,%s,%s,%s,\n", getId(), getTitle(), getStatus(), getDescription());
+    }
+
     public void addSubtask(int subtaskId) {
         subtasks.add(subtaskId);
     }

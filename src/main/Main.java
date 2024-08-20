@@ -1,9 +1,7 @@
 package main;
 
 import managers.taskManager.FileBackedTaskManager;
-import managers.taskManager.InMemoryTaskManager;
 import managers.Managers;
-import managers.taskManager.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -36,8 +34,6 @@ public class Main {
             manager.getEpicById(epic1.getId());
             manager.getSubtaskById(subtask1.getId());
 
-            // Сохранение в файл
-            manager.save();
 
             // Загрузка данных из файла
             FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
