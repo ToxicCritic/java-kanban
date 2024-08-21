@@ -20,26 +20,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     // Метод автосохранения данных в файл
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            // Заголовок файла
-            writer.write("id,type,name,status,description,epic\n");
+            // Записываем заголовок
+            writer.write("id,type,name,description,status,epicId\n");
 
-            // Сохранение задач
+            // Записываем задачи
             for (Task task : getAllTasks()) {
-                writer.write(taskToString(task) + "\n");
+                writer.write(taskToCsvString(task));
+                writer.newLine();
             }
 
-            // Сохранение эпиков
+            // Записываем эпики
             for (Epic epic : getAllEpics()) {
-                writer.write(taskToString(epic) + "\n");
+                writer.write(taskToCsvString(epic));
+                writer.newLine();
             }
 
-            // Сохранение подзадач
+            // Записываем подзадачи
             for (Subtask subtask : getAllSubtasks()) {
-                writer.write(taskToString(subtask) + "\n");
+                writer.write(taskToCsvString(subtask));
+                writer.newLine();
             }
 
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении данных в файл.");
+            throw new ManagerSaveException("Ошибка при сохранении данных в файл", e);
         }
     }
 
@@ -50,7 +53,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             while ((line = reader.readLine()) != null) {
                 if (!line.startsWith("id") && !line.isEmpty()) {
                     Task task = taskFromString(line);
-                    task.addToManager(manager);
+                    switch (getTaskType(line)) {
+                        case TASK:
+                            manager.createTask(task);
+                            break;
+                        case EPIC:
+                            manager.createEpic((Epic) task);
+                            break;
+                        case SUBTASK:
+                            manager.createSubtask((Subtask) task);
+                            break;
+                    }
                 }
             }
         } catch (IOException e) {
@@ -60,9 +73,39 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
 
+    private static TaskTypes getTaskType(String line) {
+        String[] fields = line.split(",");
+        return TaskTypes.valueOf(fields[1]);
+    }
 
-    private static String taskToString(Task task) {
-        return task.toCsvString();
+    private String taskToCsvString(Task task) {
+        return String.format("%d,%s,%s,%s,%s",
+                task.getId(),
+                TaskTypes.TASK,
+                task.getTitle(),
+                task.getDescription(),
+                task.getStatus());
+    }
+
+    // Для эпика
+    private String taskToCsvString(Epic epic) {
+        return String.format("%d,%s,%s,%s,%s",
+                epic.getId(),
+                TaskTypes.EPIC,
+                epic.getTitle(),
+                epic.getDescription(),
+                epic.getStatus());
+    }
+
+    // Для подзадачи
+    private String taskToCsvString(Subtask subtask) {
+        return String.format("%d,%s,%s,%s,%s,%d",
+                subtask.getId(),
+                TaskTypes.SUBTASK,
+                subtask.getTitle(),
+                subtask.getDescription(),
+                subtask.getStatus(),
+                subtask.getEpicId());
     }
 
     private static Task taskFromString(String value) {
@@ -70,8 +113,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         int id = Integer.parseInt(fields[0]);
         TaskTypes type = TaskTypes.valueOf(fields[1]);
         String name = fields[2];
-        TaskStatus status = TaskStatus.valueOf(fields[3]);
-        String description = fields[4];
+        String description = fields[3];
+        TaskStatus status = TaskStatus.valueOf(fields[4]);
 
         switch (type) {
             case TASK:

@@ -8,10 +8,10 @@ import java.io.File;
 
 
 public class Managers {
-    public static final String FILENAME = "main.tasks.csv";
+    public static final String FILENAME = "tasks.csv";
 
     public static TaskManager getDefault() {
-        return FileBackedTaskManager.loadFromFile(new File(System.getProperty("user.dir"), FILENAME));
+        return FileBackedTaskManager.loadFromFile(new File(System.getProperty("user.dir") + "/src/main/", FILENAME));
     }
 
     public static InMemoryHistoryManager getDefaultHistory() {

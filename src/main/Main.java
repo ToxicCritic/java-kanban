@@ -11,8 +11,8 @@ import java.io.File;
 
 public class Main {
         public static void main(String[] args) {
-            File file = new File(Managers.FILENAME);
-            FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(file);
+            File file = new File(System.getProperty("user.dir") + "/src/main/", Managers.FILENAME);
+            FileBackedTaskManager manager = (FileBackedTaskManager) Managers.getDefault();
 
             // Создание задач
             Task task1 = new Task("Задача 1", "Описание задачи 1", TaskStatus.NEW);

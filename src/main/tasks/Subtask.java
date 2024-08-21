@@ -9,16 +9,6 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    @Override
-    public void addToManager(FileBackedTaskManager manager) {
-        manager.createSubtask(this);
-    }
-
-    @Override
-    public String toCsvString() {
-        return String.format("%d,SUBTASK,%s,%s,%s,%d\n", getId(), getTitle(), getStatus(), getDescription(), epicId);
-    }
-
     public int getEpicId() {
         return epicId;
     }
