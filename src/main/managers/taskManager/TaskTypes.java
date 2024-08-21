@@ -1,4 +1,4 @@
-package managers.taskManager;
+package main.managers.taskManager;
 
 public enum TaskTypes {
     TASK,

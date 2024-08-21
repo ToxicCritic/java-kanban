@@ -1,5 +1,5 @@
-package tasks;
-import managers.taskManager.FileBackedTaskManager;
+package main.tasks;
+import main.managers.taskManager.FileBackedTaskManager;
 
 public class Task {
     private int id;

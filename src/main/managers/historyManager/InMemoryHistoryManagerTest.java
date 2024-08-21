@@ -1,9 +1,9 @@
-package managers.historyManager;
+package main.managers.historyManager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.Task;
-import tasks.TaskStatus;
+import main.tasks.Task;
+import main.tasks.TaskStatus;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package managers.historyManager;
+package main.managers.historyManager;
 
 public class Node<T> {
     private T data;

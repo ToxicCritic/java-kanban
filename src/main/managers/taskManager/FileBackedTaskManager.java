@@ -1,10 +1,10 @@
-package managers.taskManager;
+package main.managers.taskManager;
 
-import managers.exceptions.ManagerSaveException;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import tasks.TaskStatus;
+import main.managers.exceptions.ManagerSaveException;
+import main.tasks.Epic;
+import main.tasks.Subtask;
+import main.tasks.Task;
+import main.tasks.TaskStatus;
 
 import java.io.*;
 
