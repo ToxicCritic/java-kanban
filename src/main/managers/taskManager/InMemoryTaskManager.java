@@ -1,24 +1,24 @@
-package managers.taskManager;
+package main.managers.taskManager;
 
-import managers.Managers;
-import managers.historyManager.HistoryManager;
-import managers.historyManager.InMemoryHistoryManager;
+import main.managers.Managers;
+import main.managers.historyManager.HistoryManager;
+import main.managers.historyManager.InMemoryHistoryManager;
 
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import tasks.TaskStatus;
+import main.tasks.Epic;
+import main.tasks.Subtask;
+import main.tasks.Task;
+import main.tasks.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Subtask> subtasks;
-    private final HashMap<Integer, Epic> epics;
+    protected final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, Subtask> subtasks;
+    protected final HashMap<Integer, Epic> epics;
     private final InMemoryHistoryManager historyManager;
-    private int idCounter;
+    protected int idCounter;
 
     @Override
     public List<Task> getHistory() {

@@ -1,4 +1,5 @@
-package tasks;
+package main.tasks;
+import main.managers.taskManager.FileBackedTaskManager;
 
 public class Task {
     private int id;
@@ -10,6 +11,12 @@ public class Task {
         this.title = title;
         this.description = description;
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %d | Тип: Задача | Название: %s | Статус: %s | Описание: %s",
+                id, title, status, description);
     }
 
     public int getId() {
