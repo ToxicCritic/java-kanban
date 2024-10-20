@@ -1,11 +1,16 @@
 package main.tasks;
 import main.managers.taskManager.FileBackedTaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
-    private int id;
-    private String title;
-    private String description;
-    private TaskStatus status;
+    protected int id;
+    protected String title;
+    protected String description;
+    protected TaskStatus status;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
     public Task(String title, String description, TaskStatus status) {
         this.title = title;
@@ -13,10 +18,22 @@ public class Task {
         this.status = status;
     }
 
+    public Task(String title, String description, TaskStatus status, Duration duration, LocalDateTime startTime) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
     @Override
     public String toString() {
         return String.format("ID: %d | Тип: Задача | Название: %s | Статус: %s | Описание: %s",
                 id, title, status, description);
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
     }
 
     public int getId() {
@@ -45,5 +62,13 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 }

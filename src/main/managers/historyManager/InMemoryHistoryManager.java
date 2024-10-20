@@ -15,6 +15,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         this.tail = null;
     }
 
+
     // Метод добавления задачи в конец списка
     private void linkLast(Task element) {
         Node<Task> last = tail;

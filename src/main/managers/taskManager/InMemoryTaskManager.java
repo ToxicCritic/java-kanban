@@ -9,6 +9,8 @@ import main.tasks.Subtask;
 import main.tasks.Task;
 import main.tasks.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +33,23 @@ public class InMemoryTaskManager implements TaskManager {
         epics = new HashMap<>();
         this.historyManager = Managers.getDefaultHistory();
         idCounter = 1;
+    }
+
+    private void updateEpicDuration(Epic epic) {
+        Duration sumDuration = Duration.ZERO;
+        for (int subtaskID : epic.getSubtasks()) {
+            Duration subtaskDuration = getSubtaskById(subtaskID).getDuration();
+            sumDuration = sumDuration.plus(subtaskDuration);
+        }
+    }
+
+    private void updateEpicStartTime(Epic epic) {
+        for (int subtaskID : epic.getSubtasks()) {
+            LocalDateTime subtaskDateTime = getSubtaskById(subtaskID).getEndTime();
+            if (subtaskDateTime.isAfter(epic.getEndTime())) {
+                epic.setEndTime(subtaskDateTime);
+            }
+        }
     }
 
     @Override
@@ -81,6 +100,8 @@ public class InMemoryTaskManager implements TaskManager {
             if (epic != null) {
                 epic.removeSubtask(subtask.getId());
                 updateEpicStatus(epic);
+                updateEpicDuration(epic);
+                updateEpicStartTime(epic);
             }
         }
     }
@@ -194,7 +215,10 @@ public class InMemoryTaskManager implements TaskManager {
         for (Subtask subtask : subtasksToDelete) {
             int epicId = subtask.getEpicId();
             subtasks.remove(subtask.getId());
-            updateEpicStatus(getEpicById(epicId));
+            Epic epic = getEpicById(epicId);
+            updateEpicStatus(epic);
+            updateEpicDuration(epic);
+            updateEpicStartTime(epic);
         }
     }
 
