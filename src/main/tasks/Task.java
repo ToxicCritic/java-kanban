@@ -3,6 +3,7 @@ import main.managers.taskManager.FileBackedTaskManager;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Task {
     protected int id;
@@ -28,8 +29,12 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("ID: %d | Тип: Задача | Название: %s | Статус: %s | Описание: %s",
-                id, title, status, description);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedStartTime = (startTime != null) ? startTime.format(formatter) : "Не задано";
+
+        return String.format("ID: %d | Тип: Задача | Название: %s | Статус: %s | Описание: %s | Продолжительность: %s" +
+                        " | Время начала: %s  | Время завершения: %s",
+                id, title, status, description, duration, formattedStartTime, getEndTime().format(formatter));
     }
 
     public LocalDateTime getEndTime() {
@@ -70,5 +75,13 @@ public class Task {
 
     public void setDuration(Duration duration) {
         this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 }
