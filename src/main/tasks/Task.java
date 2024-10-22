@@ -18,7 +18,7 @@ public class Task {
         this.description = description;
         this.status = status;
         this.duration = Duration.ZERO;
-        this.startTime = LocalDateTime.MAX;
+        this.startTime = null;
     }
 
     public Task(String title, String description, TaskStatus status, Duration duration, LocalDateTime startTime) {
@@ -34,10 +34,11 @@ public class Task {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String formattedStartTime = (startTime != null) ? startTime.format(formatter) : "Не задано";
         String formattedDuration = formatDuration(duration);
+        String formattedEndTime = (getEndTime() != null) ? getEndTime().format(formatter) : "Не задано";
 
         return String.format("ID: %d | Название: %s | Статус: %s | Описание: %s | Продолжительность: %s" +
                         " | Время начала: %s  | Время завершения: %s",
-                id, title, status, description, formattedDuration, formattedStartTime, getEndTime().format(formatter));
+                id, title, status, description, formattedDuration, formattedStartTime, formattedEndTime);
     }
 
     private String formatDuration(Duration duration) {

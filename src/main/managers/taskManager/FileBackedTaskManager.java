@@ -74,6 +74,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerSaveException("Ошибка при загрузке данных из файла", e);
         }
         for (Epic epic : manager.getAllEpics()) {
+            manager.updateEpicStartTime(epic);
             manager.updateEpicDuration(epic);
             manager.updateEpicEndTime(epic);
         }
