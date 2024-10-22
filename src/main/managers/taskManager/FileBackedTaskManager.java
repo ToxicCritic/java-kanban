@@ -75,7 +75,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
         for (Epic epic : manager.getAllEpics()) {
             manager.updateEpicDuration(epic);
-            manager.updateEpicStartTime(epic);
+            manager.updateEpicEndTime(epic);
         }
         return manager;
     }

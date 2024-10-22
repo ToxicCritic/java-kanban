@@ -17,6 +17,8 @@ public class Task {
         this.title = title;
         this.description = description;
         this.status = status;
+        this.duration = Duration.ZERO;
+        this.startTime = LocalDateTime.MAX;
     }
 
     public Task(String title, String description, TaskStatus status, Duration duration, LocalDateTime startTime) {
