@@ -9,6 +9,7 @@ import main.tasks.TaskStatus;
 
 import java.io.File;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 public class Main {
@@ -26,11 +27,11 @@ public class Main {
         manager.createTask(task2);
 
         // Создание эпика с подзадачами
-        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", TaskStatus.NEW, duration, startTime);
+        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", TaskStatus.NEW, Duration.ZERO, LocalDateTime.now());
         manager.createEpic(epic1);
 
         Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", TaskStatus.NEW, epic1.getId(), duration, startTime);
-        Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", TaskStatus.NEW, epic1.getId(), duration, startTime);
+        Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", TaskStatus.NEW, epic1.getId(), duration.plusHours(3), startTime);
         manager.createSubtask(subtask1);
         manager.createSubtask(subtask2);
 

@@ -73,6 +73,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке данных из файла", e);
         }
+        for (Epic epic : manager.getAllEpics()) {
+            manager.updateEpicDuration(epic);
+            manager.updateEpicStartTime(epic);
+        }
         return manager;
     }
 
@@ -156,6 +160,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void createSubtask(Subtask subtask) {
         super.createSubtask(subtask);
+
         save();
     }
 

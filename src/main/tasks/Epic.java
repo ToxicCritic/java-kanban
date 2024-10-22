@@ -14,11 +14,13 @@ public class Epic extends Task {
     public Epic(String title, String description, TaskStatus status) {
         super(title, description, status);
         this.subtasks = new ArrayList<>();
+        this.endTime = LocalDateTime.MIN;
     }
 
     public Epic(String title, String description, TaskStatus status, Duration duration, LocalDateTime startTime) {
         super(title, description, status, duration, startTime);
         this.subtasks = new ArrayList<>();
+        this.endTime = LocalDateTime.MIN;
     }
 
     @Override

@@ -31,10 +31,21 @@ public class Task {
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String formattedStartTime = (startTime != null) ? startTime.format(formatter) : "Не задано";
+        String formattedDuration = formatDuration(duration);
 
-        return String.format("ID: %d | Тип: Задача | Название: %s | Статус: %s | Описание: %s | Продолжительность: %s" +
+        return String.format("ID: %d | Название: %s | Статус: %s | Описание: %s | Продолжительность: %s" +
                         " | Время начала: %s  | Время завершения: %s",
-                id, title, status, description, duration, formattedStartTime, getEndTime().format(formatter));
+                id, title, status, description, formattedDuration, formattedStartTime, getEndTime().format(formatter));
+    }
+
+    private String formatDuration(Duration duration) {
+        if (duration == null) {
+            return "Не задано";
+        }
+
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+        return String.format("%d ч. %d мин.", hours, minutes);
     }
 
     public LocalDateTime getEndTime() {

@@ -19,7 +19,6 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-
     public int getEpicId() {
         return epicId;
     }
