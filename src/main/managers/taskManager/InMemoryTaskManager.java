@@ -49,6 +49,22 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    protected boolean isTimeOverlap(LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2) {
+        return !(end1.isBefore(start2) || start1.isAfter(end2));
+    }
+
+    protected boolean isTaskOrSubtaskOverlapping(Task newTask) {
+        return tasks.values().stream()
+                .filter(task -> task.getStartTime() != null && task.getEndTime() != null)
+                .anyMatch(existingTask -> isTimeOverlap(newTask.getStartTime(), newTask.getEndTime(),
+                        existingTask.getStartTime(), existingTask.getEndTime()))
+                || subtasks.values().stream()
+                .filter(subtask -> subtask.getStartTime() != null && subtask.getEndTime() != null)
+                .anyMatch(existingSubtask -> isTimeOverlap(newTask.getStartTime(), newTask.getEndTime(),
+                        existingSubtask.getStartTime(), existingSubtask.getEndTime()));
+    }
+
+
     protected void updateEpicDuration(Epic epic) {
         Duration sumDuration = Duration.ZERO;
         for (int subtaskID : epic.getSubtasks()) {
@@ -226,6 +242,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
+        if (task.getStartTime() != null && task.getEndTime() != null) {
+            if (isTaskOrSubtaskOverlapping(task)) {
+                throw new IllegalArgumentException("Новая задача пересекается по времени с существующей задачей.");
+            }
+        }
         task.setId(idCounter++);
         tasks.put(task.getId(), task);
         addTaskToPrioritizedList(task);
@@ -233,6 +254,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createSubtask(Subtask subtask) {
+        if (subtask.getStartTime() != null && subtask.getEndTime() != null) {
+            if (isTaskOrSubtaskOverlapping(subtask)) {
+                throw new IllegalArgumentException("Новая подзадача пересекается по времени с существующей задачей.");
+            }
+        }
         subtask.setId(idCounter++);
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
