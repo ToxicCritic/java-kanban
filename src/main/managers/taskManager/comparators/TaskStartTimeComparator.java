@@ -17,7 +17,6 @@ public class TaskStartTimeComparator implements Comparator<Task> {
             return -1;
         }
 
-        // Сравниваем по времени начала
         int timeComparison = t1.getStartTime().compareTo(t2.getStartTime());
 
         if (timeComparison == 0) {
