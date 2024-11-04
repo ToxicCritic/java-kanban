@@ -21,25 +21,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
 
 
-    // Метод автосохранения данных в файл
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            // Записываем заголовок
             writer.write("id,type,name,description,status,epicId\n");
 
-            // Записываем задачи
             for (Task task : getAllTasks()) {
                 writer.write(taskToCsvString(task));
                 writer.newLine();
             }
 
-            // Записываем эпики
             for (Epic epic : getAllEpics()) {
                 writer.write(taskToCsvString(epic));
                 writer.newLine();
             }
 
-            // Записываем подзадачи
             for (Subtask subtask : getAllSubtasks()) {
                 writer.write(taskToCsvString(subtask));
                 writer.newLine();
@@ -52,6 +47,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
+        int maxId = 0;
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -59,17 +56,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     Task task = taskFromString(line);
                     switch (getTaskType(line)) {
                         case TASK:
-                            manager.createTask(task);
+                            manager.addTaskToMap(task); // Добавляем напрямую в мапу
                             break;
                         case EPIC:
-                            manager.createEpic((Epic) task);
+                            manager.addEpicToMap((Epic) task);
                             break;
                         case SUBTASK:
-                            manager.createSubtask((Subtask) task);
+                            Subtask subtask = (Subtask) task;
+                            manager.addSubtaskToMap(subtask);
+                            Epic parentEpic = manager.getEpicById(subtask.getEpicId());
+                            if (parentEpic != null) {
+                                parentEpic.addSubtask(subtask.getId());
+                            }
                             break;
+                    }
+                    if (task.getId() > maxId) {
+                        maxId = task.getId();
                     }
                 }
             }
+            manager.idCounter = maxId + 1;
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке данных из файла", e);
         }
@@ -80,6 +86,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
         return manager;
     }
+
 
 
     private static TaskTypes getTaskType(String line) {
@@ -224,4 +231,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.removeAllEpics();
         save();
     }
+
+    private void addTaskToMap(Task task) {
+        tasks.put(task.getId(), task);
+    }
+
+    private void addEpicToMap(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    private void addSubtaskToMap(Subtask subtask) {
+        subtasks.put(subtask.getId(), subtask);
+    }
+
 }

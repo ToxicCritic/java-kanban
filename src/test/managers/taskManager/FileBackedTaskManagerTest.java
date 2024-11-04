@@ -27,7 +27,7 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void shouldSaveAndLoadTasks() {
-        Task task = new Task("Test Task", "Test Description", TaskStatus.NEW);
+        Task task = new Task("Тестовая задача", "Тестовое описание", TaskStatus.NEW);
         manager.createTask(task);
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(testFile);
@@ -40,10 +40,10 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void shouldSaveAndLoadEpicsAndSubtasks() {
-        Epic epic = new Epic("Test Epic", "Epic Description", TaskStatus.NEW);
+        Epic epic = new Epic("Тестовый эпик", "Описание эпика", TaskStatus.NEW);
         manager.createEpic(epic);
 
-        Subtask subtask = new Subtask("Test Subtask", "Subtask Description", TaskStatus.NEW, epic.getId());
+        Subtask subtask = new Subtask("Тестовая подзадача", "Описание подзадачи", TaskStatus.NEW, epic.getId());
         manager.createSubtask(subtask);
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(testFile);
@@ -60,7 +60,7 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void shouldSaveAndLoadEmptyHistory() {
-        Task task = new Task("Test Task", "Test Description", TaskStatus.NEW);
+        Task task = new Task("Тестовая задача", "Тестовое описание", TaskStatus.NEW);
         manager.createTask(task);
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(testFile);
@@ -81,13 +81,47 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void shouldSaveAndLoadMultipleTasks() {
-        Task task1 = new Task("Task 1", "Description 1", TaskStatus.NEW);
-        Task task2 = new Task("Task 2", "Description 2", TaskStatus.IN_PROGRESS);
+        Task task1 = new Task("Задача 1", "Описание задачи 1", TaskStatus.NEW);
+        Task task2 = new Task("Задача 2", "Описание задачи 2", TaskStatus.IN_PROGRESS);
         manager.createTask(task1);
         manager.createTask(task2);
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(testFile);
 
         assertEquals(2, loadedManager.getAllTasks().size(), "Количество задач не совпадает");
+    }
+
+    @Test
+    void testTaskCreationDeletionAndRecreation() throws IOException {
+        // Создаем временный файл для тестов
+        // Создаем менеджер задач и добавляем задачи
+        FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(testFile);
+
+        Task task1 = new Task("Задача 1", "Описание задачи 1", TaskStatus.NEW);
+        manager.createTask(task1);
+
+        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", TaskStatus.NEW);
+        manager.createEpic(epic1);
+
+        Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", TaskStatus.NEW, epic1.getId());
+        manager.createSubtask(subtask1);
+
+        Task task2 = new Task("Задача 2", "Описание задачи 2", TaskStatus.NEW);
+        manager.createTask(task2);
+
+        // Удаляем первую задачу и добавляем новую
+        manager.deleteTaskById(task1.getId());
+        Task task3 = new Task("Задача 3", "Описание задачи 3", TaskStatus.NEW);
+        manager.createTask(task3);
+
+        // Загружаем новый менеджер из файла
+        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(testFile);
+
+        // Проверяем количество задач и их идентификаторы
+        assertEquals(2, loadedManager.getAllTasks().size(), "Количество задач должно быть 2");
+        assertNotNull(loadedManager.getTaskById(task2.getId()), "Задача 2 должна присутствовать");
+        assertNotNull(loadedManager.getTaskById(task3.getId()), "Задача 3 должна присутствовать");
+        assertEquals(task2.getId(), loadedManager.getTaskById(task2.getId()).getId(), "Идентификатор задачи 2 должен совпадать");
+        assertEquals(task3.getId(), loadedManager.getTaskById(task3.getId()).getId(), "Идентификатор задачи 3 должен совпадать");
     }
 }
