@@ -58,7 +58,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     Task task = taskFromString(line);
                     switch (getTaskType(line)) {
                         case TASK:
-                            manager.addTaskToMap(task); // Добавляем напрямую в мапу
+                            manager.addTaskToMap(task);
                             break;
                         case EPIC:
                             manager.addEpicToMap((Epic) task);

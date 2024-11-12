@@ -10,6 +10,8 @@ import main.tasks.TaskStatus;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +29,7 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void shouldSaveAndLoadTasks() {
-        Task task = new Task("Тестовая задача", "Тестовое описание", TaskStatus.NEW);
+        Task task = new Task("Тестовая задача", "Тестовое описание", TaskStatus.NEW, Duration.ofHours(1), LocalDateTime.now());
         manager.createTask(task);
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(testFile);
@@ -40,10 +42,10 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void shouldSaveAndLoadEpicsAndSubtasks() {
-        Epic epic = new Epic("Тестовый эпик", "Описание эпика", TaskStatus.NEW);
+        Epic epic = new Epic("Тестовый эпик", "Описание эпика", TaskStatus.NEW, Duration.ofHours(1), LocalDateTime.now());
         manager.createEpic(epic);
 
-        Subtask subtask = new Subtask("Тестовая подзадача", "Описание подзадачи", TaskStatus.NEW, epic.getId());
+        Subtask subtask = new Subtask("Тестовая подзадача", "Описание подзадачи", TaskStatus.NEW, epic.getId(), Duration.ofHours(1), LocalDateTime.now());
         manager.createSubtask(subtask);
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(testFile);
@@ -60,7 +62,7 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void shouldSaveAndLoadEmptyHistory() {
-        Task task = new Task("Тестовая задача", "Тестовое описание", TaskStatus.NEW);
+        Task task = new Task("Тестовая задача", "Тестовое описание", TaskStatus.NEW, Duration.ofHours(1), LocalDateTime.now());
         manager.createTask(task);
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(testFile);
@@ -81,8 +83,8 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void shouldSaveAndLoadMultipleTasks() {
-        Task task1 = new Task("Задача 1", "Описание задачи 1", TaskStatus.NEW);
-        Task task2 = new Task("Задача 2", "Описание задачи 2", TaskStatus.IN_PROGRESS);
+        Task task1 = new Task("Задача 1", "Описание задачи 1", TaskStatus.NEW, Duration.ofHours(1), LocalDateTime.now());
+        Task task2 = new Task("Задача 2", "Описание задачи 2", TaskStatus.IN_PROGRESS, Duration.ofHours(1), LocalDateTime.now().plusHours(2));
         manager.createTask(task1);
         manager.createTask(task2);
 
@@ -97,21 +99,21 @@ public class FileBackedTaskManagerTest {
         // Создаем менеджер задач и добавляем задачи
         FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(testFile);
 
-        Task task1 = new Task("Задача 1", "Описание задачи 1", TaskStatus.NEW);
+        Task task1 = new Task("Задача 1", "Описание задачи 1", TaskStatus.NEW, Duration.ofHours(1), LocalDateTime.now());
         manager.createTask(task1);
 
-        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", TaskStatus.NEW);
+        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", TaskStatus.NEW, Duration.ofHours(0), LocalDateTime.now());
         manager.createEpic(epic1);
 
-        Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", TaskStatus.NEW, epic1.getId());
+        Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", TaskStatus.NEW, epic1.getId(), Duration.ofHours(1), LocalDateTime.now().plusHours(2));
         manager.createSubtask(subtask1);
 
-        Task task2 = new Task("Задача 2", "Описание задачи 2", TaskStatus.NEW);
+        Task task2 = new Task("Задача 2", "Описание задачи 2", TaskStatus.NEW, Duration.ofHours(1), LocalDateTime.now().plusHours(5));
         manager.createTask(task2);
 
         // Удаляем первую задачу и добавляем новую
         manager.deleteTaskById(task1.getId());
-        Task task3 = new Task("Задача 3", "Описание задачи 3", TaskStatus.NEW);
+        Task task3 = new Task("Задача 3", "Описание задачи 3", TaskStatus.NEW, Duration.ofHours(1), LocalDateTime.now().plusHours(12));
         manager.createTask(task3);
 
         // Загружаем новый менеджер из файла

@@ -7,7 +7,9 @@ import main.tasks.Task;
 import java.util.Collection;
 
 public interface TaskManager {
-    Collection<Task> getHistory(); // Не очень понял зачем, ведь метод в HistoryManager статический
+    Collection<Task> getPrioritizedTasks();
+
+    Collection<Task> getHistory();
 
     void createTask(Task task);
 
