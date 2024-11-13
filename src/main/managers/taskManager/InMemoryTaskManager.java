@@ -47,7 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected void addTaskToPrioritizedList(Task task) {
-        if (task.getStartTime() != null) {
+        if (task.getStartTime() != null && task.getEndTime() != null) {
             prioritizedTasks.add(task);
         }
     }
@@ -56,32 +56,19 @@ public class InMemoryTaskManager implements TaskManager {
         prioritizedTasks.remove(task);
     }
 
+    protected void isTimeOverlap(Task newTask) {
+        prioritizedTasks.stream()
+                .filter(existingTask -> existingTask.getId() != newTask.getId())
+                .filter(existingTask -> isTimeOverlap(newTask, existingTask))
+                .findFirst()
+                .ifPresent(overlappingTask -> {
+                    throw new IllegalArgumentException("Задача пересекается по времени с другой задачей.");
+                });
+    }
+
     protected boolean isTimeOverlap(Task task1, Task task2) {
-        if (task1.getId() == task2.getId()) return false;
-
-        return !(task1.getEndTime().isBefore(task2.getStartTime()) ||
-                task2.getEndTime().isBefore(task1.getStartTime()));
+        return !(task1.getEndTime().isBefore(task2.getStartTime()) || task1.getStartTime().isAfter(task2.getEndTime()));
     }
-
-
-
-    protected boolean isTaskOrSubtaskOverlapping(Task newTask) {
-        if (newTask.getStartTime() == null || newTask.getEndTime() == null) {
-            throw new IllegalArgumentException("У задачи должны быть заданы время начала и окончания.");
-        }
-
-        removeTaskFromPrioritizedList(newTask);
-
-        boolean isOverlapping = prioritizedTasks.stream()
-                .filter(task -> task.getStartTime() != null && task.getEndTime() != null)
-                .filter(task -> !task.equals(newTask))
-                .anyMatch(existingTask -> isTimeOverlap(newTask, existingTask));
-
-        addTaskToPrioritizedList(newTask);
-
-        return isOverlapping;
-    }
-
 
     protected void updateEpicDuration(Epic epic) {
         Duration sumDuration = epic.getSubtasks().stream()
@@ -210,7 +197,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task updatedTask) {
-        isTaskOrSubtaskOverlapping(updatedTask);
+        isTimeOverlap(updatedTask);
         prioritizedTasks.remove(updatedTask);
         tasks.put(updatedTask.getId(), updatedTask);
         addTaskToPrioritizedList(updatedTask);
@@ -219,7 +206,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask updatedSubtask) {
-        isTaskOrSubtaskOverlapping(updatedSubtask);
+        isTimeOverlap(updatedSubtask);
         prioritizedTasks.remove(updatedSubtask);
         subtasks.put(updatedSubtask.getId(), updatedSubtask);
         updateEpicData(epics.get(updatedSubtask.getEpicId()));
@@ -252,7 +239,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
-        isTaskOrSubtaskOverlapping(task);
+        isTimeOverlap(task);
         task.setId(idCounter++);
         tasks.put(task.getId(), task);
         addTaskToPrioritizedList(task);
@@ -260,7 +247,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createSubtask(Subtask subtask) {
-        isTaskOrSubtaskOverlapping(subtask);
+        isTimeOverlap(subtask);
         subtask.setId(idCounter++);
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());

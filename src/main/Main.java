@@ -34,8 +34,8 @@ public class Main {
         Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", TaskStatus.NEW, Duration.ZERO, LocalDateTime.now());
         manager.createEpic(epic1);
 
-        Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", TaskStatus.NEW, epic1.getId(), duration, startTime2.plusHours(1));
-        Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", TaskStatus.NEW, epic1.getId(), duration.plusHours(3), startTime3.plusHours(2));
+        Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", TaskStatus.NEW, epic1.getId(), duration, startTime2.plusHours(5));
+        Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", TaskStatus.NEW, epic1.getId(), duration.plusHours(3), startTime3.plusHours(12));
         manager.createSubtask(subtask1);
         manager.createSubtask(subtask2);
 
