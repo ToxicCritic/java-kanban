@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 public class HttpTaskServer {
     private static final int PORT = 8080;
     private final HttpServer server;
-    private final TaskManager taskManager; // Общий экземпляр TaskManager
+    private final TaskManager taskManager;
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
-        this.taskManager = taskManager; // Инициализируем TaskManager через Managers
+        this.taskManager = taskManager;
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         setupEndpoints();
     }
