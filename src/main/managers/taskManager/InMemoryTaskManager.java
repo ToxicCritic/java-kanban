@@ -260,6 +260,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createEpic(Epic epic) {
+        if (epic == null) {
+            throw new IllegalArgumentException("Epic не может быть null.");
+        }
         epic.setId(idCounter++);
         epics.put(epic.getId(), epic);
     }
